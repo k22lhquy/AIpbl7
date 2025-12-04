@@ -1,10 +1,12 @@
 from ultralytics import YOLO
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import cv2
 import numpy as np
 import os
 
 app = Flask(__name__)
+CORS(app)  # Cho phép gọi từ frontend
 
 # Load Models
 model_human = YOLO("bestHuman.pt")
@@ -95,7 +97,6 @@ def detect_api():
 # --------------------------------------------------
 @app.route("/test", methods=["GET"])
 def test_api():
-    # JSON mẫu giống cấu trúc detect
     sample_json = {
         "human": [
             {"class_id": 0, "class_name": "person", "confidence": 0.95, "x1": 100, "y1": 50, "x2": 300, "y2": 450},
@@ -112,8 +113,8 @@ def test_api():
 
 
 # --------------------------------------------------
-# Run Flask
+# Run Flask trên Render
 # --------------------------------------------------
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5000))  # Lấy port từ Render
     app.run(host="0.0.0.0", port=port)
